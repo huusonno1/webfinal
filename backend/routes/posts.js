@@ -8,11 +8,12 @@ import { verifyToken } from "../middleware/authMiddleware.js"
 
 const router = express.Router()
 
+// verifyToken has not been added
 /* READ */
-router.get("/", verifyToken, getFeedPosts);
-router.get("/:userId/posts", verifyToken, getUserPosts);
+router.get("/", getFeedPosts);
+router.get("/:userId/posts", getUserPosts);
 
 /* UPDATE */
-router.patch("/:id/like", verifyToken, likePost);
+router.patch("/:id/like", likePost);
 
 export default router;
