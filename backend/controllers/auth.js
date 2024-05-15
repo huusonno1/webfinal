@@ -28,7 +28,7 @@ const register = async (req, res) => {
             lastName,
             email,
             password: hashedPassword,
-            picturePath: req.file.filename,
+            picturePath,
             friends,
             location,
             occupation,
