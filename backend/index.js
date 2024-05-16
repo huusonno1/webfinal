@@ -13,6 +13,7 @@ import userRoutes from "./routes/users.js";
 import postRoutes from "./routes/posts.js";
 import { createPost } from "./controllers/posts.js";
 import { register } from "./controllers/auth.js";
+import { updateUser } from "./controllers/users.js";
 import { verifyToken } from "./middleware/authMiddleware.js";
 import User from "./models/User.js";
 import Post from "./models/Post.js";
@@ -48,6 +49,7 @@ const upload = multer({ storage });
 app.post("/auth/register", upload.single("picture"), register);
 
 app.post("/posts", verifyToken, upload.single("picture"), createPost);
+app.patch('/users/:id', verifyToken, upload.single('picture'), updateUser);
 
 /* ROUTES */
 app.use("/auth", authRoutes);
