@@ -96,10 +96,14 @@ const addComment = async (req, res) => {
 
 // Get comments for a post
 const getComments = async (req, res) => {
-    const { id } = req.params;
+    const { id  } = req.params;
 
     try {
-        const post = await Post.findById(id).populate('comments.user_id', 'firstName lastName picturePath');
+        const post = await Post.findById(id).populate({
+            path: 'comments.user_id',
+            select: 'firstName lastName picturePath'
+        });
+
         if (!post) return res.status(404).json({ message: 'Post not found' });
 
         const commentsWithUserDetails = post.comments.map(comment => ({
