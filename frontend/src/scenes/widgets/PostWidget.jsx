@@ -1,8 +1,9 @@
 import {
-  ChatBubbleOutlineOutlined,
-  FavoriteBorderOutlined,
-  FavoriteOutlined,
-  ShareOutlined,
+    ChatBubbleOutlineOutlined,
+    FavoriteBorderOutlined,
+    FavoriteOutlined,
+    ShareOutlined,
+    DeleteOutlined,
 } from "@mui/icons-material";
 import { Box, Divider, IconButton, Typography, useTheme, TextField, Button } from "@mui/material";
 import FlexBetween from "components/FlexBetween";
@@ -67,23 +68,44 @@ const PostWidget = ({
       dispatch(setPost({ post: updatedPost }));
   };
 
-  const handleCommentSubmit = async () => {
-      if (!commentText.trim()) return;
+    const handleCommentSubmit = async () => {
+        if (!commentText.trim()) return;
 
-      const response = await fetch(`http://localhost:3001/posts/${postId}/comments`, {
-          method: "POST",
-          headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ comment: commentText, user_id: loggedInUserId }),
-      });
+        const response = await fetch(`http://localhost:3001/posts/${postId}/comments`, {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ comment: commentText, user_id: loggedInUserId }),
+        });
 
-      const updatedPost = await response.json();
-      dispatch(setPost({ post: updatedPost }));
-      setPostComments(updatedPost.comments); // Update comments in state
-      setCommentText(""); // Clear the input field
-  };
+        const updatedPost = await response.json();
+        dispatch(setPost({ post: updatedPost }));
+        setPostComments(updatedPost.comments); // Update comments in state
+        setCommentText(""); // Clear the input field
+    };
+    
+    const handleDeleteComment = async (commentId) => {
+        try {
+            const response = await fetch(`http://localhost:3001/posts/${postId}/comments/${commentId}`, {
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            if (response.ok) {
+                // Xóa comment khỏi state và cập nhật lại danh sách comments
+                const updatedComments = postComments.filter(comment => comment._id !== commentId);
+                setPostComments(updatedComments);
+            } else {
+                // Xử lý khi xóa comment không thành công
+                console.error("Failed to delete comment");
+            }
+        } catch (error) {
+            console.error("Error deleting comment:", error);
+        }
+    };
 
   return (
       <WidgetWrapper m="2rem 0">
@@ -144,6 +166,11 @@ const PostWidget = ({
                                   />
                               )}
                               <Typography sx={{ color: main }}>{comment.comment}</Typography>
+                              {comment.user && comment.user._id === loggedInUserId && (
+                                    <IconButton onClick={() => handleDeleteComment(comment._id)}>
+                                        <DeleteOutlined />
+                                    </IconButton>
+                                )}
                           </FlexBetween>
                       </Box>
                   ))}
