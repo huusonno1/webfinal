@@ -21,7 +21,7 @@ const register = async (req, res) => {
         const userExists = await User.findOne({ email });
         if (userExists) res.status(400).send("User already exists");
     
-        const salt = await bcrypt.genSalt(10);
+        const salt = await bcrypt.genSalt();
         const hashedPassword = await bcrypt.hash(password, salt);
         const newUser = new User({
             firstName,
