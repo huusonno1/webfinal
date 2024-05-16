@@ -11,7 +11,7 @@ import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
   
-const UserWidget = ({ userId, picturePath }) => {
+const UserWidget = ({ userId }) => {
     const [user, setUser] = useState(null);
     const { palette } = useTheme();
     const navigate = useNavigate();
@@ -19,6 +19,7 @@ const UserWidget = ({ userId, picturePath }) => {
     const dark = palette.neutral.dark;
     const medium = palette.neutral.medium;
     const main = palette.neutral.main;
+    const [image, setImage] = useState(null);
 
     const getUser = async () => {
         const response = await fetch(`http://localhost:3001/users/${userId}`,
@@ -29,6 +30,7 @@ const UserWidget = ({ userId, picturePath }) => {
         );
         const data = await response.json();
         setUser(data);
+        setImage(data.picturePath);
     }
 
     useEffect(() => {
@@ -58,7 +60,7 @@ const UserWidget = ({ userId, picturePath }) => {
                 // onClick={() => navigate(`/profile/${userId}`)}
             >
                 <FlexBetween gap="1rem">
-                    <UserImage image={picturePath} />
+                    <UserImage image={image} />
                     <Box>
                         <Typography
                             variant="h4"

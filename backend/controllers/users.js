@@ -65,7 +65,7 @@ const addRemoveFriend = async (req, res) => {
 const updateUser = async (req, res) => {
     try {
         const { id } = req.params;
-        const { firstName, lastName, location, occupation } = req.body;
+        const { firstName, lastName, location, occupation, picturePath } = req.body;
 
         const user = await User.findById(id);
 
@@ -73,10 +73,7 @@ const updateUser = async (req, res) => {
         if (lastName) user.lastName = lastName;
         if (location) user.location = location;
         if (occupation) user.occupation = occupation;
-
-        if (req.file) {
-            user.picturePath = req.file.picturePath;
-        }
+        if (picturePath) user.picturePath = picturePath;
 
         const updateUser = await user.save();
 

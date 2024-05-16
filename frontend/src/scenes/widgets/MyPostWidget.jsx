@@ -20,20 +20,42 @@ import FlexBetween from "components/FlexBetween";
 import Dropzone from "react-dropzone";
 import UserImage from "components/UserImage";
 import WidgetWrapper from "components/WidgetWrapper";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPosts } from "state";
 
-const MyPostWidget = ({ picturePath }) => {
+const MyPostWidget = ({ userId, picturePath }) => {
     const dispatch = useDispatch();
     const [isImage, setIsImage] = useState(false);
+    const [user, setUser] = useState(null);
     const [image, setImage] = useState(null);
+    const [imageOfUser, setImageOfUser] = useState(null);
     const [post, setPost] = useState("");
     const { palette } = useTheme();
     const { _id } = useSelector((state) => state.user);
     const token = useSelector((state) => state.token);
     const mediumMain = palette.neutral.mediumMain;
     const medium = palette.neutral.medium;
+
+    const getUser = async () => {
+        const response = await fetch(`http://localhost:3001/users/${userId}`,
+            {
+                method: "GET",
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        );
+        const data = await response.json();
+        setUser(data);
+        setImageOfUser(data.picturePath);
+    }
+
+    useEffect(() => {
+        getUser();
+    }, []);
+
+    if (!user) {
+        return null;
+    }
 
     const handlePost = async () => {
         const formData = new FormData();
@@ -59,7 +81,7 @@ const MyPostWidget = ({ picturePath }) => {
     return (
         <WidgetWrapper>
             <FlexBetween gap="1.5rem">
-                <UserImage image={picturePath} />
+                <UserImage image={imageOfUser} />
                 <InputBase
                     placeholder="What's on your mind..."
                     onChange={(e) => setPost(e.target.value)}

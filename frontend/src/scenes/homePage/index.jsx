@@ -21,10 +21,10 @@ const HomePage = () => {
                 justifyContent="space-between"
             >
                 <Box flexBasis={ "26%" }>
-                    <UserWidget userId={_id} picturePath={picturePath} />
+                    <UserWidget userId={_id} />
                 </Box>
                 <Box flexBasis="42%" >
-                    <MyPostWidget picturePath={picturePath} />
+                    <MyPostWidget userId={_id} picturePath={picturePath} />
                     <PostsWidget userId={_id} />
                 </Box>
                 <Box flexBasis="26%">
